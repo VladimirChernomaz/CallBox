@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_dark"
+            android:gravity="center"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_intro"
+            android:textSize="13sp"
+            android:textColor="@color/text_dark"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_key_label"
+            android:textSize="13sp"
+            android:textColor="@color/text_dark"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editKey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="pk_live_…"
+            android:background="@drawable/bg_card"
+            android:textColor="@color/text_dark"
+            android:padding="14dp"
+            android:inputType="textVisiblePassword"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_channel_label"
+            android:textSize="13sp"
+            android:textColor="@color/text_dark"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editChannel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/setup_channel_hint"
+            android:background="@drawable/bg_card"
+            android:textColor="@color/text_dark"
+            android:padding="14dp"
+            android:layout_marginBottom="20dp" />
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_save"
+            android:backgroundTint="@color/primary"
+            android:textColor="@color/text_on_primary" />
+
+        <TextView
+            android:id="@+id/textSetupError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/danger"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+</ScrollView>

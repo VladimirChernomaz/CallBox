@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CallBox</string>
+
+    <string name="setup_intro">Введите свой ключ Metered (Dashboard → Realtime Messaging → API Keys) и общее название комнаты — то же, что у вашего собеседника.</string>
+    <string name="setup_key_label">Publishable key</string>
+    <string name="setup_channel_label">Название комнаты (придумайте своё, известное только вам двоим)</string>
+    <string name="setup_channel_hint">например, nashakomnata-x7q</string>
+    <string name="setup_save">💾 Сохранить и продолжить</string>
+    <string name="setup_error_key">Ключ должен начинаться с pk_</string>
+    <string name="setup_error_channel">Впишите название комнаты</string>
+
+    <string name="connecting">Подключение…</string>
+    <string name="need_mic_permission">Нужен доступ к микрофону — разрешите в настройках</string>
+    <string name="waiting_for_partner">Ждём, когда собеседник откроет приложение…</string>
+    <string name="partner_online">Собеседник на связи</string>
+    <string name="incoming_call">📞 Входящий звонок…</string>
+    <string name="in_call">🔊 Разговор идёт</string>
+    <string name="disconnected">Нет соединения</string>
+    <string name="signaling_error">Ошибка связи: %1$s</string>
+
+    <string name="call">📞 Позвонить</string>
+    <string name="accept">✅ Принять</string>
+    <string name="decline">❌ Отклонить</string>
+    <string name="hangup">🔴 Сбросить</string>
+    <string name="mute">🔇 Микрофон</string>
+    <string name="unmute">🎙 Включить микрофон</string>
+    <string name="speaker_off">🔈 Громкая связь</string>
+    <string name="speaker_on">🔊 Обычный звук</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#2E7D32</color>
+    <color name="primary_dark">#1B5E20</color>
+    <color name="accent">#66BB6A</color>
+    <color name="danger">#D32F2F</color>
+    <color name="danger_dark">#B71C1C</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_dark">#212121</color>
+    <color name="card_translucent">#E6FFFFFF</color>
+    <color name="gradient_start">#C8E6C9</color>
+    <color name="gradient_end">#F1F8E9</color>
+</resources>
