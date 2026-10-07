@@ -13,8 +13,9 @@ class SetupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySetupBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+        override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CrashLog.install(this)
 
         val skipIfConfigured = intent.getBooleanExtra(EXTRA_FORCE_EDIT, false).not()
         if (skipIfConfigured && Prefs.hasConfig(this)) {
