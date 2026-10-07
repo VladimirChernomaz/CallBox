@@ -34,8 +34,17 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CrashLog.install(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        CrashLog.getAndClear(this)?.let { crash ->
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Прошлый вылет")
+                .setMessage(crash.take(2000))
+                .setPositiveButton("Ок", null)
+                .show()
+        }
 
         webRtc = WebRtcManager(applicationContext)
         webRtc.init()
@@ -100,11 +109,16 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
 
     private fun startCall() {
         val peer = otherPeerId ?: return
-        webRtc.createConnection(iceServers)
-        webRtc.setSpeakerphoneOn(speakerOn)
-        inCall = true
-        webRtc.createOffer()
-        showInCall()
+        try {
+            webRtc.createConnection(iceServers)
+            webRtc.setSpeakerphoneOn(speakerOn)
+            inCall = true
+            webRtc.createOffer()
+            showInCall()
+        } catch (e: Throwable) {
+            inCall = false
+            binding.textStatus.text = "Ошибка (startCall): ${e.javaClass.simpleName}: ${e.message}"
+        }
     }
 
     private var pendingOfferSdp: String? = null
@@ -112,12 +126,17 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
     private fun acceptCall() {
         val peer = otherPeerId ?: return
         val sdp = pendingOfferSdp ?: return
-        webRtc.createConnection(iceServers)
-        webRtc.setSpeakerphoneOn(speakerOn)
-        webRtc.setRemoteDescription(SessionDescription(SessionDescription.Type.OFFER, sdp))
-        webRtc.createAnswer()
-        inCall = true
-        showInCall()
+        try {
+            webRtc.createConnection(iceServers)
+            webRtc.setSpeakerphoneOn(speakerOn)
+            webRtc.setRemoteDescription(SessionDescription(SessionDescription.Type.OFFER, sdp))
+            webRtc.createAnswer()
+            inCall = true
+            showInCall()
+        } catch (e: Throwable) {
+            inCall = false
+            binding.textStatus.text = "Ошибка (acceptCall): ${e.javaClass.simpleName}: ${e.message}"
+        }
     }
 
     private fun declineCall() {
