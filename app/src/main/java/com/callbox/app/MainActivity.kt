@@ -38,10 +38,16 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        CrashLog.getAndClear(this)?.let { crash ->
+        val lastCrash = CrashLog.getAndClear(this)
+        val lastBreadcrumb = Breadcrumb.getAndClear(this)
+        if (lastCrash != null || lastBreadcrumb != null) {
+            val text = buildString {
+                if (lastBreadcrumb != null) append("Последний шаг перед вылетом:\n$lastBreadcrumb\n\n")
+                if (lastCrash != null) append("Исключение:\n${lastCrash.take(1500)}")
+            }
             androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Прошлый вылет")
-                .setMessage(crash.take(2000))
+                .setMessage(text)
                 .setPositiveButton("Ок", null)
                 .show()
         }
@@ -110,11 +116,16 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
     private fun startCall() {
         val peer = otherPeerId ?: return
         try {
+            Breadcrumb.mark(this, "startCall: begin, iceServers=${iceServers.size}")
             webRtc.createConnection(iceServers)
+            Breadcrumb.mark(this, "startCall: after createConnection, setting speakerphone")
             webRtc.setSpeakerphoneOn(speakerOn)
             inCall = true
+            Breadcrumb.mark(this, "startCall: before createOffer")
             webRtc.createOffer()
+            Breadcrumb.mark(this, "startCall: before showInCall")
             showInCall()
+            Breadcrumb.mark(this, "startCall: done")
         } catch (e: Throwable) {
             inCall = false
             binding.textStatus.text = "Ошибка (startCall): ${e.javaClass.simpleName}: ${e.message}"
@@ -127,12 +138,17 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
         val peer = otherPeerId ?: return
         val sdp = pendingOfferSdp ?: return
         try {
+            Breadcrumb.mark(this, "acceptCall: begin, iceServers=${iceServers.size}")
             webRtc.createConnection(iceServers)
+            Breadcrumb.mark(this, "acceptCall: after createConnection, setting speakerphone")
             webRtc.setSpeakerphoneOn(speakerOn)
+            Breadcrumb.mark(this, "acceptCall: before setRemoteDescription")
             webRtc.setRemoteDescription(SessionDescription(SessionDescription.Type.OFFER, sdp))
+            Breadcrumb.mark(this, "acceptCall: before createAnswer")
             webRtc.createAnswer()
             inCall = true
             showInCall()
+            Breadcrumb.mark(this, "acceptCall: done")
         } catch (e: Throwable) {
             inCall = false
             binding.textStatus.text = "Ошибка (acceptCall): ${e.javaClass.simpleName}: ${e.message}"
