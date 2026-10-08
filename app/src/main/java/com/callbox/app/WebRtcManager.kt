@@ -42,9 +42,11 @@ class WebRtcManager(private val appContext: Context) {
     }
 
     fun createConnection(iceServers: List<PeerConnection.IceServer>) {
+        Breadcrumb.mark(appContext, "createConnection: building RTCConfiguration (${iceServers.size} ice servers)")
         val rtcConfig = PeerConnection.RTCConfiguration(iceServers).apply {
             sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
         }
+        Breadcrumb.mark(appContext, "createConnection: calling factory.createPeerConnection")
         pc = factory.createPeerConnection(rtcConfig, object : PeerConnection.Observer {
             override fun onIceCandidate(c: IceCandidate) { listener?.onLocalIceCandidate(c) }
             override fun onIceConnectionChange(state: PeerConnection.IceConnectionState) {
@@ -66,27 +68,41 @@ class WebRtcManager(private val appContext: Context) {
             override fun onAddTrack(receiver: RtpReceiver?, streams: Array<out MediaStream>?) {}
         })
 
+        Breadcrumb.mark(appContext, "createConnection: pc created=${pc != null}, creating audio source")
         val audioSource = factory.createAudioSource(MediaConstraints())
+        Breadcrumb.mark(appContext, "createConnection: creating audio track")
         localAudioTrack = factory.createAudioTrack("audio0", audioSource)
+        Breadcrumb.mark(appContext, "createConnection: adding track to pc")
         pc?.addTrack(localAudioTrack, listOf("stream0"))
+        Breadcrumb.mark(appContext, "createConnection: done")
     }
 
     fun createOffer() {
+        Breadcrumb.mark(appContext, "createOffer: calling pc.createOffer")
         pc?.createOffer(object : SdpObserverAdapter() {
             override fun onCreateSuccess(sdp: SessionDescription?) {
+                Breadcrumb.mark(appContext, "createOffer: onCreateSuccess, setting local description")
                 sdp ?: return
                 pc?.setLocalDescription(SdpObserverAdapter(), sdp)
                 listener?.onLocalDescription(sdp)
+            }
+            override fun onCreateFailure(p0: String?) {
+                Breadcrumb.mark(appContext, "createOffer: onCreateFailure $p0")
             }
         }, MediaConstraints())
     }
 
     fun createAnswer() {
+        Breadcrumb.mark(appContext, "createAnswer: calling pc.createAnswer")
         pc?.createAnswer(object : SdpObserverAdapter() {
             override fun onCreateSuccess(sdp: SessionDescription?) {
+                Breadcrumb.mark(appContext, "createAnswer: onCreateSuccess, setting local description")
                 sdp ?: return
                 pc?.setLocalDescription(SdpObserverAdapter(), sdp)
                 listener?.onLocalDescription(sdp)
+            }
+            override fun onCreateFailure(p0: String?) {
+                Breadcrumb.mark(appContext, "createAnswer: onCreateFailure $p0")
             }
         }, MediaConstraints())
     }
