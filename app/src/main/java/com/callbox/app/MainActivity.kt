@@ -3,6 +3,8 @@ package com.callbox.app
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.Ringtone
+import android.media.RingtoneManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,7 +24,25 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
     private var iceServers: List<PeerConnection.IceServer> = emptyList()
     private var inCall = false
     private var muted = false
-    private var speakerOn = true
+    private var speakerOn = false
+    private var ringtone: Ringtone? = null
+
+    private fun startRinging() {
+        try {
+            val uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE)
+            ringtone = RingtoneManager.getRingtone(this, uri)
+            ringtone?.play()
+        } catch (_: Throwable) {
+        }
+    }
+
+    private fun stopRinging() {
+        try {
+            ringtone?.stop()
+        } catch (_: Throwable) {
+        }
+        ringtone = null
+    }
 
     private val permissionLauncher = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
@@ -83,6 +103,7 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
 
     override fun onDestroy() {
         super.onDestroy()
+        stopRinging()
         signaling.disconnect()
         webRtc.close()
     }
@@ -90,6 +111,7 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
     // ---------- UI state ----------
 
     private fun showIdle() {
+        stopRinging()
         binding.buttonCall.visibility = if (otherPeerId != null) android.view.View.VISIBLE else android.view.View.GONE
         binding.incomingBar.visibility = android.view.View.GONE
         binding.inCallBar.visibility = android.view.View.GONE
@@ -102,9 +124,11 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
         binding.incomingBar.visibility = android.view.View.VISIBLE
         binding.inCallBar.visibility = android.view.View.GONE
         binding.textStatus.text = getString(R.string.incoming_call)
+        startRinging()
     }
 
     private fun showInCall() {
+        stopRinging()
         binding.buttonCall.visibility = android.view.View.GONE
         binding.incomingBar.visibility = android.view.View.GONE
         binding.inCallBar.visibility = android.view.View.VISIBLE
