@@ -9,10 +9,10 @@
     </style>
 
     <style name="Widget.CallBox.Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">18dp</item>
+        <item name="cornerRadius">22dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
-        <item name="elevation">3dp</item>
+        <item name="elevation">0dp</item>
     </style>
 </resources>
