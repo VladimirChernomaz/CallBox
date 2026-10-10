@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#2E7D32</color>
-    <color name="primary_dark">#1B5E20</color>
-    <color name="accent">#66BB6A</color>
-    <color name="danger">#D32F2F</color>
-    <color name="danger_dark">#B71C1C</color>
+    <color name="primary">#7C4DFF</color>
+    <color name="primary_dark">#5E35B1</color>
+    <color name="accent">#00E5FF</color>
+    <color name="danger">#FF5252</color>
+    <color name="danger_dark">#D32F2F</color>
+    <color name="call_green">#00E676</color>
+    <color name="lamp_red">#FF5252</color>
+    <color name="lamp_amber">#FFC107</color>
+    <color name="lamp_green">#00E676</color>
     <color name="text_on_primary">#FFFFFF</color>
-    <color name="text_dark">#212121</color>
-    <color name="card_translucent">#E6FFFFFF</color>
-    <color name="gradient_start">#C8E6C9</color>
-    <color name="gradient_end">#F1F8E9</color>
+    <color name="text_dark">#ECEAFB</color>
+    <color name="text_dim">#9B96C2</color>
+    <color name="card_translucent">#241B3D99</color>
+    <color name="card_solid">#241B3D</color>
+    <color name="gradient_start">#0B0A1F</color>
+    <color name="gradient_mid">#1A1140</color>
+    <color name="gradient_end">#241140</color>
 </resources>
