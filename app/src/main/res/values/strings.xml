@@ -23,6 +23,8 @@
     <string name="accept">✅ Принять</string>
     <string name="decline">❌ Отклонить</string>
     <string name="hangup">🔴 Сбросить</string>
+    <string name="decline_label">Отклонить</string>
+    <string name="accept_label">Принять</string>
     <string name="mute">🔇 Микрофон</string>
     <string name="unmute">🎙 Включить микрофон</string>
     <string name="speaker_off">🔈 Громкая связь</string>
