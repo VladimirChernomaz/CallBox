@@ -3,9 +3,13 @@ package com.callbox.app
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.animation.ObjectAnimator
+import android.animation.AnimatorSet
+import android.content.res.ColorStateList
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Bundle
+import android.view.animation.LinearInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.callbox.app.databinding.ActivityMainBinding
@@ -44,6 +48,29 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
         ringtone = null
     }
 
+    private fun startLampPulse() {
+        val pulseScaleX = ObjectAnimator.ofFloat(binding.statusGlow, "scaleX", 1f, 1.25f, 1f).apply {
+            duration = 1800; repeatCount = ObjectAnimator.INFINITE
+        }
+        val pulseScaleY = ObjectAnimator.ofFloat(binding.statusGlow, "scaleY", 1f, 1.25f, 1f).apply {
+            duration = 1800; repeatCount = ObjectAnimator.INFINITE
+        }
+        val pulseAlpha = ObjectAnimator.ofFloat(binding.statusGlow, "alpha", 0.9f, 0.35f, 0.9f).apply {
+            duration = 1800; repeatCount = ObjectAnimator.INFINITE
+        }
+        AnimatorSet().apply {
+            playTogether(pulseScaleX, pulseScaleY, pulseAlpha)
+            interpolator = LinearInterpolator()
+            start()
+        }
+    }
+
+    private fun setLampColor(colorRes: Int) {
+        val color = ContextCompat.getColor(this, colorRes)
+        binding.statusDot.backgroundTintList = ColorStateList.valueOf(color)
+        binding.statusGlow.backgroundTintList = ColorStateList.valueOf(color)
+    }
+
     private val permissionLauncher = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -71,6 +98,9 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
                 .setPositiveButton("Ок", null)
                 .show()
         }
+
+        startLampPulse()
+        setLampColor(R.color.lamp_red)
 
         webRtc = WebRtcManager(applicationContext)
         webRtc.init()
@@ -115,14 +145,20 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
         binding.buttonCall.visibility = if (otherPeerId != null) android.view.View.VISIBLE else android.view.View.GONE
         binding.incomingBar.visibility = android.view.View.GONE
         binding.inCallBar.visibility = android.view.View.GONE
-        binding.textStatus.text = if (otherPeerId != null)
-            getString(R.string.partner_online) else getString(R.string.waiting_for_partner)
+        if (otherPeerId != null) {
+            setLampColor(R.color.lamp_green)
+            binding.textStatus.text = getString(R.string.partner_online)
+        } else {
+            setLampColor(R.color.lamp_red)
+            binding.textStatus.text = getString(R.string.waiting_for_partner)
+        }
     }
 
     private fun showIncoming(fromName: String) {
         binding.buttonCall.visibility = android.view.View.GONE
         binding.incomingBar.visibility = android.view.View.VISIBLE
         binding.inCallBar.visibility = android.view.View.GONE
+        setLampColor(R.color.lamp_amber)
         binding.textStatus.text = getString(R.string.incoming_call)
         startRinging()
     }
@@ -132,6 +168,7 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
         binding.buttonCall.visibility = android.view.View.GONE
         binding.incomingBar.visibility = android.view.View.GONE
         binding.inCallBar.visibility = android.view.View.VISIBLE
+        setLampColor(R.color.accent)
         binding.textStatus.text = getString(R.string.in_call)
     }
 
@@ -198,12 +235,18 @@ class MainActivity : AppCompatActivity(), MeteredSignaling.Listener, WebRtcManag
         muted = !muted
         webRtc.setMuted(muted)
         binding.buttonMute.text = if (muted) getString(R.string.unmute) else getString(R.string.mute)
+        binding.buttonMute.backgroundTintList = ColorStateList.valueOf(
+            ContextCompat.getColor(this, if (muted) R.color.danger else R.color.card_solid)
+        )
     }
 
     private fun toggleSpeaker() {
         speakerOn = !speakerOn
         webRtc.setSpeakerphoneOn(speakerOn)
         binding.buttonSpeaker.text = if (speakerOn) getString(R.string.speaker_off) else getString(R.string.speaker_on)
+        binding.buttonSpeaker.backgroundTintList = ColorStateList.valueOf(
+            ContextCompat.getColor(this, if (speakerOn) R.color.accent else R.color.card_solid)
+        )
     }
 
     // ---------- MeteredSignaling.Listener ----------
